@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +12,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     public function login(Request $request)
@@ -32,18 +33,18 @@ class AuthController extends Controller
 
         $user = Auth::user();
         return response()->json([
-                'status' => 'success',
-                //'user' => $user,
-                'authorisation' => [
-                    'token' => $token,
-                    'type' => 'bearer',
-                    'time to live'=>env('JWT_TTL',60),
-                ]
-            ]);
-
+            'status' => 'success',
+            //'user' => $user,
+            'authorisation' => [
+                'token' => $token,
+                'type' => 'bearer',
+                'time to live' => env('JWT_TTL', 60),
+            ]
+        ]);
     }
 
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -64,7 +65,7 @@ class AuthController extends Controller
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
-                'time to live'=>env('JWT_TTL',60),
+                'time to live' => env('JWT_TTL', 60),
             ]
         ]);
     }
@@ -89,5 +90,4 @@ class AuthController extends Controller
             ]
         ]);
     }
-
 }

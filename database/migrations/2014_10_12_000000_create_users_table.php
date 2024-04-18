@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->date('birthDate')->nullable();
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
-            $table->float('salary')->nullable();
+            // $table->float('salary')->nullable();
             $table->string('avatar')->nullable();
 
 
