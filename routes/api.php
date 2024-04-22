@@ -24,7 +24,8 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::put('user/update', 'update')->name('user.update');
-    Route::post('user/update-avatar', 'updateAvatar')->name('user.update-avatar');
-    Route::get('user/me', 'show')->name('user.me');
+    Route::get('/users', 'index')->name('users.update');
+    Route::put('users/{id}', 'update')->name('users.update');
+    Route::post('users-avatar/{id}', 'updateAvatar')->name('users.update-avatar');
+    Route::get('users/me', 'show')->name('users.me');
 });
