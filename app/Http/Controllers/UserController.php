@@ -96,9 +96,9 @@ class UserController extends Controller
     {
         //Kiểm tra quyền update
         $loggingUser = User::find(Auth::user()->id);
-        $updateUser = User::find($updateId);
+        $userToUpdate = User::find($updateId);
 
-        if (!$this->canEdit($loggingUser, $updateUser)) {
+        if (!$this->canEdit($loggingUser, $userToUpdate)) {
             return response()->json(["message" => "No permission"], 403);
         }
 
@@ -109,18 +109,23 @@ class UserController extends Controller
             'address' => 'nullable|string|max:255',
             'birthDate' => 'nullable|date',
             'gender' => 'nullable|in:male,female,other',
+            'role' => 'nullable|in:admin,manager,employee',
             // 'avatar' => xử lí ở phuong thức updateAvatar
         ]);
 
         // Lấy thông tin từ request
         $userData = $request->only(['name', 'phone', 'address', 'birthDate', 'gender']);
+        // Nếu người dùng có quyền là admin, thêm trường 'role' vào $userData
+        if ($loggingUser->role == 'admin' && $request->has('role')) {
+            $userToUpdate['role'] = $request->input('role');
+        }
 
         // Cập nhật thông tin người dùng
-        $updateUser->update($userData);
+        $userToUpdate->update($userData);
 
         return response()->json([
             'status' => 'success',
-            'changes' => $updateUser->getChanges(),
+            'changes' => $userToUpdate->getChanges(),
         ], 200);
     }
 
