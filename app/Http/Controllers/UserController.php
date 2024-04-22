@@ -53,16 +53,38 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show1(User $user)
+    public function show($id)
     {
-        //
+        $userToReturn = User::find($id);
+        $loggingUser = Auth::user();
+
+        $roleValues = [
+            'admin' => 1,
+            'manager' => 2,
+            'employee' => 3,
+        ];
+
+        if (($userToReturn->id == $loggingUser['id']) ||
+            ($roleValues[$loggingUser['role']] < $roleValues[$userToReturn->role])
+        ) {
+            return response()->json([
+                'status' => 'success',
+                'user' => $userToReturn,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'no permission'
+        ]);
     }
 
-    public function show()
+    /**
+     * Return logging user
+     */
+    public function me()
     {
         return response()->json([
-            'status' => 'success',
-            'user' => User::where('id', '=', Auth::id())->first()
+            'user' => User::find(Auth::id()),
         ]);
     }
 
@@ -76,7 +98,7 @@ class UserController extends Controller
         $loggingUser = User::find(Auth::user()->id);
         $updateUser = User::find($updateId);
 
-        if (!$this->canUpdate($loggingUser, $updateUser)) {
+        if (!$this->canEdit($loggingUser, $updateUser)) {
             return response()->json(["message" => "No permission"], 403);
         }
 
@@ -143,7 +165,7 @@ class UserController extends Controller
     }
 
     //Quangz: xem xem người dùng A có quyền chỉnh sửa thông tin người dùng B không
-    private function canUpdate(User $A, User $B)
+    private function canEdit(User $A, User $B)
     {
         //Chinh sửa chính mình
         if ($A->id == $B->id) return true;
