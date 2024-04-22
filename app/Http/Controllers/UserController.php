@@ -55,7 +55,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $userToReturn = User::find($id);
+        $userToShow = User::find($id);
         $loggingUser = Auth::user();
 
         $roleValues = [
@@ -64,12 +64,12 @@ class UserController extends Controller
             'employee' => 3,
         ];
 
-        if (($userToReturn->id == $loggingUser['id']) ||
-            ($roleValues[$loggingUser['role']] < $roleValues[$userToReturn->role])
+        if (($userToShow->id == $loggingUser['id']) ||
+            ($roleValues[$loggingUser['role']] < $roleValues[$userToShow->role])
         ) {
             return response()->json([
                 'status' => 'success',
-                'user' => $userToReturn,
+                'user' => $userToShow,
             ]);
         }
 
@@ -130,7 +130,7 @@ class UserController extends Controller
         $loggingUser = User::find(Auth::user()->id);
         $updateUser = User::find($updateId);
 
-        if (!$this->canUpdate($loggingUser, $updateUser)) {
+        if (!$this->canEdit($loggingUser, $updateUser)) {
             return response()->json(["message" => "No permission"], 403);
         }
 
@@ -159,9 +159,23 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        //
+        $loggingUser = User::find(Auth::user()->id);
+        $userToDelete = User::find($id);
+        // dd($user);
+        if (!$this->canEdit($loggingUser, $userToDelete)) {
+            return response()->json([
+                'message' => 'no permission'
+            ]);
+        };
+
+        $userToDelete->delete();
+        return response()->json(
+            [
+                'message' => 'user deleted success'
+            ]
+        );
     }
 
     //Quangz: xem xem người dùng A có quyền chỉnh sửa thông tin người dùng B không

@@ -29,4 +29,5 @@ Route::controller(UserController::class)->group(function () {
     Route::post('users-avatar/{id}', 'updateAvatar')->name('users.update-avatar');
     Route::get('users/me', 'me')->name('users.me');
     Route::get('users/{id}', 'show')->name('users.show');
+    Route::delete('users/{id}', 'destroy');
 });
