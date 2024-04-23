@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +31,14 @@ Route::controller(UserController::class)->group(function () {
     Route::get('users/me', 'me')->name('users.me');
     Route::get('users/{id}', 'show')->name('users.show');
     Route::delete('users/{id}', 'destroy');
+});
+
+Route::prefix('projects')->group(function () {
+    Route::controller(ProjectController::class)->group(function () {
+        Route::get('/', 'index')->name('projects.index');
+        Route::post('/', 'store')->name('projects.store');
+        Route::get('/{id}', 'show')->name('projects.show');
+        Route::put('/{id}', 'update')->name('projects.update');
+        Route::delete('/{id}', 'destroy')->name('projects.destroy');
+    });
 });
