@@ -11,6 +11,7 @@ class ProjectController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['']]);
+        $this->middleware('admin')->except('index', 'show');
     }
     public function index()
     {
